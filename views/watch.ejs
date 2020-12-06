@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video <%= id %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  </head>
+  <body>
+      <div>
+    <h1>Video <%= id %></h1>
+    <form action="/upload">
+        <input type="submit" value="Upload a New Video" />
+    </form>
+    <video id="videoPlayer" width="50%" controls>
+        <source src="/api/stream/<%= id %>" type="video/mp4" />
+    </video>
+    <div id="custom-seekbar">
+        <span></span>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function() {
+            var socket = io();
+            var vid = document.getElementById("videoPlayer");
+            vid.ontimeupdate = function(){
+                var percentage = ( vid.currentTime / vid.duration ) * 100;
+                $("#custom-seekbar span").css("width", percentage+"%");
+            };
+
+            $("#custom-seekbar").on("click", function(e) {
+                var offset = $(this).offset();
+                var left = (e.pageX - offset.left);
+                var totalWidth = $("#custom-seekbar").width();
+                var percentage = ( left / totalWidth );
+                var vidTime = vid.duration * percentage;
+                vid.currentTime = vidTime;
+                socket.emit('<%= id %>seek', vidTime);
+            });//click()
+
+            socket.on('<%= id %>seek', function(seekTime) {
+                    console.log("seek event received");
+                    vid.currentTime = seekTime;
+                    vid.play();
+            });
+        });
+    </script>
+    </div>
+  </body>
+</html>

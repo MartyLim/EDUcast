@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script>
+        function EvaluateForm() {
+            document.videoSearchForm.action = `/watch/${document.getElementById('videoID').value}`;
+            document.forms["videoSearchForm"].submit();
+
+            return false;
+        }
+    </script> 
+  </head>
+  <body>
+    <div>
+        <h1><%= title %></h1>
+        <p>Welcome to <%= title %>!</p>
+        <form name="videoSearchForm" action="" method=get>
+            <label for="videoID">Video ID</label><br>
+            <input type="text" id="videoID">
+            <input type="button" value="Submit" onClick="return EvaluateForm();">
+        </form> <br>
+        <p>or</p> <br>
+        <form action="/upload">
+            <input type="submit" value="Upload a Video" />
+        </form>
+    </div>
+  </body>
+</html>
